@@ -1,0 +1,19 @@
+[package]
+name = "paste_bypass"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+winapi = { version = "0.3", features = [
+  "winuser",
+  "winbase",
+  "winnls",
+  "errhandlingapi",
+  "winerror",
+] }
+log = "0.4"
+simple_logger = "1.11"
+
+# 确保下面的部分单独作为一个section
+[build-dependencies]
+winres = "0.1"
