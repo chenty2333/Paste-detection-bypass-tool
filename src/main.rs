@@ -52,10 +52,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let _ = tx_clone.send(Action::Hotkey);
     })?;
 
-    println!("粘贴绕过工具 (命令行版本)");
+    println!("粘贴绕过工具 (Paste Bypass Tool) - 命令行版本 (Command Line Version)");
     println!("=========================");
-    println!("按 Ctrl+Shift+V 触发粘贴绕过");
-    println!("按 Ctrl+C 退出程序");
+    println!("按 Ctrl+Shift+V 触发粘贴绕过 (Press Ctrl+Shift+V to trigger paste bypass)");
+    println!("按 Ctrl+C 退出程序 (Press Ctrl+C to exit the program)");
     println!("");
 
     // 创建用户输入线程
@@ -65,16 +65,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     thread::spawn(move || {
         while *running_clone.lock().unwrap() {
-            println!("\n选项:");
-            println!("1. 捕获剪贴板");
-            println!("2. 模拟输入");
-            println!("3. 显示当前缓冲区");
-            println!("4. 设置按键延迟");
-            println!("5. 设置速度模式");
-            println!("6. 自定义输入参数");
-            println!("7. 退出");
+            println!("\n选项 (Options):");
+            println!("1. 捕获剪贴板 (Capture Clipboard)");
+            println!("2. 模拟输入 (Simulate Typing)");
+            println!("3. 显示当前缓冲区 (Show Current Buffer)");
+            println!("4. 设置按键延迟 (Set Key Delay)");
+            println!("5. 设置速度模式 (Set Speed Mode)");
+            println!("6. 自定义输入参数 (Custom Input Parameters)");
+            println!("7. 退出 (Exit)");
 
-            print!("请选择 (1-7): ");
+            print!("请选择 (Please select) (1-7): ");
             io::stdout().flush().unwrap();
 
             let mut choice = String::new();
@@ -105,7 +105,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let _ = tx_user.send(Action::Exit);
                     break;
                 }
-                _ => println!("无效的选择，请输入1-7"),
+                _ => println!("无效的选择，请输入1-7 (Invalid choice, please enter 1-7)"),
             }
         }
     });
@@ -129,16 +129,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                                 if let Some(content) = text {
                                     *buffer_clone.lock().unwrap() = Some(content);
-                                    println!("已捕获剪贴板内容");
+                                    println!("已捕获剪贴板内容 (Clipboard content captured)");
                                 }
                             }
-                            Err(e) => println!("错误: {}", e),
+                            Err(e) => println!("错误 (Error): {}", e),
                         }
                     }
                     Action::SimulateTyping => {
                         let text = buffer_clone.lock().unwrap().clone();
                         if let Some(text) = text {
-                            println!("将在3秒后开始模拟输入...");
+                            println!(
+                                "将在3秒后开始模拟输入... (Starting simulation in 3 seconds...)"
+                            );
                             for i in (1..=3).rev() {
                                 println!("{}...", i);
                                 thread::sleep(Duration::from_secs(1));
@@ -146,26 +148,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                             let sim = input_simulator_clone.lock().unwrap();
                             match sim.simulate_typing(&text) {
-                                Ok(_) => println!("模拟输入完成"),
-                                Err(e) => println!("错误: {}", e),
+                                Ok(_) => println!("模拟输入完成 (Typing simulation completed)"),
+                                Err(e) => println!("错误 (Error): {}", e),
                             }
                         } else {
-                            println!("缓冲区为空，请先捕获剪贴板");
+                            println!("缓冲区为空，请先捕获剪贴板 (Buffer is empty, please capture clipboard first)");
                         }
                     }
                     Action::ShowBuffer => {
                         let text = buffer_clone.lock().unwrap().clone();
                         if let Some(text) = text {
-                            println!("当前缓冲区内容:");
+                            println!("当前缓冲区内容 (Current buffer content):");
                             println!("----------------");
                             println!("{}", text);
                             println!("----------------");
                         } else {
-                            println!("缓冲区为空");
+                            println!("缓冲区为空 (Buffer is empty)");
                         }
                     }
                     Action::SetDelay => {
-                        print!("输入按键延迟(毫秒): ");
+                        print!("输入按键延迟(毫秒) (Enter key delay in ms): ");
                         io::stdout().flush().unwrap();
 
                         let mut delay = String::new();
@@ -176,19 +178,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         if let Ok(delay_ms) = delay.trim().parse::<u64>() {
                             let mut sim = input_simulator_clone.lock().unwrap();
                             sim.set_delay(delay_ms);
-                            println!("按键延迟已设置为 {} 毫秒", delay_ms);
+                            println!(
+                                "按键延迟已设置为 {} 毫秒 (Key delay set to {} ms)",
+                                delay_ms, delay_ms
+                            );
                         } else {
-                            println!("无效的输入，请输入一个数字");
+                            println!(
+                                "无效的输入，请输入一个数字 (Invalid input, please enter a number)"
+                            );
                         }
                     }
                     Action::SetSpeedMode => {
-                        println!("选择速度模式:");
-                        println!("1. 慢速 (安全模式，适合严格网站)");
-                        println!("2. 正常 (默认)");
-                        println!("3. 快速 (适合一般网站)");
-                        println!("4. 极速 (最快，但可能被检测)");
+                        println!("选择速度模式 (Select speed mode):");
+                        println!("1. 慢速 (安全模式，适合严格网站) (Slow - Safe mode for strict websites)");
+                        println!("2. 正常 (默认) (Normal - Default)");
+                        println!("3. 快速 (适合一般网站) (Fast - For general websites)");
+                        println!(
+                            "4. 极速 (最快，但可能被检测) (Turbo - Fastest, but may be detected)"
+                        );
 
-                        print!("请选择 (1-4): ");
+                        print!("请选择 (Please select) (1-4): ");
                         io::stdout().flush().unwrap();
 
                         let mut mode_choice = String::new();
@@ -200,21 +209,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         match mode_choice.trim() {
                             "1" => {
                                 simulator.set_speed_mode(InputSpeed::Slow);
-                                println!("已设置为慢速模式");
+                                println!("已设置为慢速模式 (Set to slow mode)");
                             }
                             "2" => {
                                 simulator.set_speed_mode(InputSpeed::Normal);
-                                println!("已设置为正常模式");
+                                println!("已设置为正常模式 (Set to normal mode)");
                             }
                             "3" => {
                                 simulator.set_speed_mode(InputSpeed::Fast);
-                                println!("已设置为快速模式");
+                                println!("已设置为快速模式 (Set to fast mode)");
                             }
                             "4" => {
                                 simulator.set_speed_mode(InputSpeed::Turbo);
-                                println!("已设置为极速模式");
+                                println!("已设置为极速模式 (Set to turbo mode)");
                             }
-                            _ => println!("无效选择，使用默认正常模式"),
+                            _ => println!("无效选择，使用默认正常模式 (Invalid choice, using default normal mode)"),
                         }
                     }
                     Action::CustomParams => {
@@ -222,7 +231,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         let mut batch_size = 5;
                         let mut batch_delay_ms = 50;
 
-                        print!("输入字符延迟(毫秒，0-100): ");
+                        print!("输入字符延迟(毫秒，0-100) (Enter character delay in ms, 0-100): ");
                         io::stdout().flush().unwrap();
                         let mut input = String::new();
                         if io::stdin().read_line(&mut input).is_ok() {
@@ -231,7 +240,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             }
                         }
 
-                        print!("输入批处理大小(1-100): ");
+                        print!("输入批处理大小(1-100) (Enter batch size, 1-100): ");
                         io::stdout().flush().unwrap();
                         input.clear();
                         if io::stdin().read_line(&mut input).is_ok() {
@@ -240,7 +249,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             }
                         }
 
-                        print!("输入批次间延迟(毫秒，0-500): ");
+                        print!("输入批次间延迟(毫秒，0-500) (Enter batch delay in ms, 0-500): ");
                         io::stdout().flush().unwrap();
                         input.clear();
                         if io::stdin().read_line(&mut input).is_ok() {
@@ -252,18 +261,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         let mut simulator = input_simulator_clone.lock().unwrap();
                         simulator.set_custom_params(delay_ms, batch_size, batch_delay_ms);
                         println!(
-                            "已设置自定义参数: 字符延迟={}ms, 批大小={}, 批次延迟={}ms",
-                            delay_ms, batch_size, batch_delay_ms
+                            "已设置自定义参数: 字符延迟={}ms, 批大小={}, 批次延迟={}ms (Custom parameters set: char delay={}ms, batch size={}, batch delay={}ms)",
+                            delay_ms, batch_size, batch_delay_ms, delay_ms, batch_size, batch_delay_ms
                         );
                     }
                     Action::Exit => {
-                        println!("退出程序");
+                        println!("退出程序 (Exiting program)");
                         // 设置运行标记为false
                         *running.lock().unwrap() = false;
                         break;
                     }
                     Action::Hotkey => {
-                        println!("\n[热键触发] 执行粘贴绕过...");
+                        println!("\n[热键触发] 执行粘贴绕过... ([Hotkey triggered] Executing paste bypass...)");
 
                         // 捕获剪贴板
                         let mut cm = clipboard_manager_clone.lock().unwrap();
@@ -274,10 +283,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                                 if let Some(content) = text {
                                     *buffer_clone.lock().unwrap() = Some(content.clone());
-                                    println!("已捕获剪贴板内容");
+                                    println!("已捕获剪贴板内容 (Clipboard content captured)");
 
                                     // 短暂延迟，让用户有时间切换窗口
-                                    println!("请在3秒内切换到目标窗口...");
+                                    println!("请在3秒内切换到目标窗口... (Please switch to target window within 3 seconds...)");
                                     for i in (1..=3).rev() {
                                         println!("{}...", i);
                                         thread::sleep(Duration::from_secs(1));
@@ -286,14 +295,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                     // 执行模拟输入
                                     let sim = input_simulator_clone.lock().unwrap();
                                     match sim.simulate_typing(&content) {
-                                        Ok(_) => println!("模拟输入完成"),
-                                        Err(e) => println!("模拟输入错误: {}", e),
+                                        Ok(_) => {
+                                            println!("模拟输入完成 (Typing simulation completed)")
+                                        }
+                                        Err(e) => println!(
+                                            "模拟输入错误 (Typing simulation error): {}",
+                                            e
+                                        ),
                                     }
                                 } else {
-                                    println!("缓冲区为空，无法模拟输入");
+                                    println!("缓冲区为空，无法模拟输入 (Buffer is empty, cannot simulate typing)");
                                 }
                             }
-                            Err(e) => println!("剪贴板捕获错误: {}", e),
+                            Err(e) => println!("剪贴板捕获错误 (Clipboard capture error): {}", e),
                         }
                     }
                 }
